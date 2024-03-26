@@ -16,14 +16,6 @@
   --va-border-radius: 0px;
 }
 
-[data-wm-plugin="vertical-accordions"] .accordion-title h3{
-  font-family: var(--va-accordion-title-font-family, var(--heading-font-font-family));
-  font-size: var(--va-accordion-title-size, var(--heading-3-size));
-
-  text-transform: var(--va-accordion-title-text-transform, var(--heading-font-text-transform));
- letter-spacing: var(--va-accordion-title-letter-spacing, var(--heading-font-letter-spacing));
-}
-
 [data-wm-plugin="vertical-accordions"] .accordion-panel:nth-of-type(1) .accordion-title {
   background-color: var(--va-panel-1-background);
 }
@@ -89,9 +81,17 @@
   background-color: var(--va-panel-hover-8-background, var(--va-panel-8-background));
 }
 
+[data-wm-plugin="vertical-accordions"] .accordion-title h3{
+  font-family: var(--va-accordion-title-font-family, var(--heading-font-font-family));
+  font-size: var(--va-accordion-title-size, var(--heading-3-size));
+  text-transform: var(--va-accordion-title-text-transform, var(--heading-font-text-transform));
+ letter-spacing: var(--va-accordion-title-letter-spacing, var(--heading-font-letter-spacing));
+}
+
+
 @media only screen and (min-width: 767px) { 
   #siteWrapper [data-wm-plugin="vertical-accordions"] .accordion-panel:not(:nth-of-type(1)) .accordion-title {
-    border-left: var(--va-border-width) solid var(--va-va-border-color);
+    border-left: var(--va-border-width) solid var(--va-border-color);
   }
 }
 
