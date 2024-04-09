@@ -1,6 +1,9 @@
-/* =========
-  Vertical Accordions For Squarespace 
-========== */
+
+/**
+* Vertical Accordions For Squarespace 
+* Copyright Will-Myers.com & Abi Bacon
+* Development Lead, Abi Bacon
+**/
 [data-wm-plugin="vertical-accordions"] {
   --va-min-panel-height: 30vh;
   --va-max-panel-height: 90vh;
@@ -168,6 +171,10 @@
   [data-wm-plugin="vertical-accordions"] .accordion-panel {
     flex-direction: column;
     height: auto;
+  }
+
+  [data-wm-plugin="vertical-accordions"] .accordion-panel {
+    min-height: unset;
   }
 
   [data-wm-plugin="vertical-accordions"] .accordion-title {
