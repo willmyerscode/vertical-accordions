@@ -465,7 +465,7 @@ class WMVerticalAccordion {
   }
   async function duplicateRootCssRule() {
     const hasStyle = document.querySelector('style#wm-root-theme-duplicate');
-    if (!hasStyle) return;
+    if (hasStyle) return;
     
     try {
       // Fetch the CSS file
