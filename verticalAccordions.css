@@ -188,10 +188,8 @@
 }
 
 /* Classic Editor within Fluid Engine */
-[data-wm-plugin="vertical-accordions"]  {
-  .sqs-block-image .design-layout-fluid img {
+[data-wm-plugin="vertical-accordions"] .sqs-block-image .design-layout-fluid img {
     height: auto;
-  }
 }
 
 #siteWrapper [data-fluid-engine="true"] [data-wm-plugin="vertical-accordions"] .content-wrapper:has(.sqs-layout) {
