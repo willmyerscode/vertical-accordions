@@ -20,19 +20,6 @@
   --va-border-radius: 0px;
 }
 
-/* 
-[data-wm-plugin="vertical-accordions"] .accordion-title .text{
-  font-family: var(--va-accordion-title-font-family, inherit);
-  font-size: var(--va-accordion-title-size, inherit);
-  text-transform: var(--va-accordion-title-text-transform, inherit);
-  letter-spacing: var(--va-accordion-title-letter-spacing, inherit);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-} 
-*/
-
-
 [data-wm-plugin="vertical-accordions"]  {
   border: var(--va-border-width) solid var(--va-border-color);
   border-radius: var(--va-border-radius);
@@ -107,8 +94,7 @@
   gap: 17px;
   flex-grow: 1;
   flex-shrink: 0;
-  writing-mode: vertical-lr;
-  text-orientation: mixed;
+  flex-direction:column;
   transform: rotate(0deg);
   justify-content: space-between;
   cursor: pointer;
@@ -133,6 +119,8 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  writing-mode: vertical-lr;
+  text-orientation: mixed;
 }
 
 [data-wm-plugin="vertical-accordions"] .accordion-title .icon-wrapper {
