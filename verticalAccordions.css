@@ -166,6 +166,9 @@
   }
 
   [data-wm-plugin="vertical-accordions"] .accordion-title {
+    flex-direction: row;
+  }
+  [data-wm-plugin="vertical-accordions"] .accordion-title .text {
     writing-mode: initial;
   }
   
@@ -189,7 +192,7 @@
 
 /* Classic Editor within Fluid Engine */
 [data-wm-plugin="vertical-accordions"] .sqs-block-image .design-layout-fluid img {
-    height: auto;
+  height: auto;
 }
 
 #siteWrapper [data-fluid-engine="true"] [data-wm-plugin="vertical-accordions"] .content-wrapper:has(.sqs-layout) {
