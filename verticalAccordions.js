@@ -16,15 +16,8 @@ class WMVerticalAccordion {
   constructor(el){
     this.el = el;
     
-    // let url = new URL(window.location.href);
-    // let searchParams = new URLSearchParams(url.search);
-    // this.paramActive = parseInt(searchParams.get('va-active'));
-    
     this.accordionPanels = this.el.querySelectorAll('[data-wm-plugin="vertical-accordions"] .accordion-panel');
-    
-    // this.openOnLoad = el.getAttribute('data-open') || '1';
-    // this.openOnLoad = this.openOnLoad.trim();
-    // this.openOnLoad = parseInt(this.openOnLoad);
+
     this.initialOpen = this.getInitialPanelIndexToOpen();
     this.activePanel = null;
     this.canOpen = true;
@@ -38,7 +31,7 @@ class WMVerticalAccordion {
   }  
   init () {
     this.bindEvents();
-    this.findSizes();
+    this.getTitleSizes();
     this.openPanel(this.accordionPanels[this.initialOpen])
     WMVerticalAccordion.emitEvent('wmVerticalAccordions:loaded', {
       container: this.el
@@ -64,6 +57,8 @@ class WMVerticalAccordion {
       panel.classList.add('panel-active');
       const currentActivePanel = this.el.querySelector('.panel-active');
       this.activePanel = this.el.querySelector('.panel-active');
+      this.getActivePanelHeight();
+      this.getTallestPanelHeight();
       this.allowFocus(this.activePanel)
       this.scrollBack();
       this.activePanel.addEventListener('transitionend', () => {
@@ -82,7 +77,6 @@ class WMVerticalAccordion {
       panel.addEventListener('click', handleEvent)
     });
   }
-
   removeActiveClasses(){
     this.accordionPanels.forEach((panel) => {
       panel.classList.remove('panel-active');
@@ -108,6 +102,40 @@ class WMVerticalAccordion {
     return panelIndex;
   }
   findSizes(){
+    this.getTitleSizes();
+    this.getTallestPanelHeight();
+    this.getActivePanelHeight();
+  }
+  getTallestPanelHeight(){
+    const allSections = this.sections.length ? this.sections : this.classicSections;
+    let maxHeight = 0;
+    allSections.forEach((section) => {
+      var sectionHeight = section.scrollHeight;
+      sectionHeight = section.clientHeight + 1;
+
+      if (sectionHeight > maxHeight) {
+        maxHeight = sectionHeight;
+      }
+      console.log(maxHeight)
+      this.component.style.setProperty('--va-tallest-panel-height', maxHeight + 'px');
+    });
+  }
+  getActivePanelHeight(){
+    if (this.activePanel !== null) {
+      var activeSections = this.activePanel.querySelector('.sections');
+      var activeClassicSections = this.activePanel.querySelector('.sqs-layout');
+
+      const activePanelSections = activeSections ? activeSections : activeClassicSections;
+
+      var activeSectionHeight = activePanelSections.scrollHeight
+
+      this.component.style.setProperty('--va-active-height', activeSectionHeight + 'px');
+
+      console.log(activeSectionHeight);
+
+    }
+  }
+  getTitleSizes(){
     this.componentSizes = this.component.getBoundingClientRect();
     this.componentWidth = this.componentSizes.width;
     this.totalTitleWidth = 0;
@@ -119,33 +147,6 @@ class WMVerticalAccordion {
       this.activeWidth = this.componentWidth - this.totalTitleWidth + 'px';
       this.component.style.setProperty('--va-active-width', this.activeWidth);
     });
-
-    if (this.sections.length > 0) {
-      let maxHeight = 0;
-      this.sections.forEach((section) => {
-        var sectionHeight = section.scrollHeight;
-        if (sectionHeight > maxHeight) {
-          maxHeight = sectionHeight;
-        }
-        this.activeHeight = sectionHeight + 'px';
-        this.component.style.setProperty('--va-active-height', this.activeHeight);
-        this.component.style.setProperty('--va-tallest-panel-height', maxHeight + 'px');
-      });
-    }
-
-    if (this.classicSections.length > 0) {
-      let maxHeight = 0;
-      this.classicSections.forEach((section) => {
-        var sectionHeight = section.scrollHeight;
-        if (sectionHeight > maxHeight) {
-          maxHeight = sectionHeight;
-        }
-        this.activeHeight = sectionHeight + 'px';
-        this.component.style.setProperty('--va-active-height', this.activeHeight);
-        this.component.style.setProperty('--va-tallest-panel-height', maxHeight + 'px');
-    });
-  }
-    
   }
   resizeEvent(){
     window.addEventListener('resize', () => {
