@@ -116,7 +116,6 @@ class WMVerticalAccordion {
       if (sectionHeight > maxHeight) {
         maxHeight = sectionHeight;
       }
-      console.log(maxHeight)
       this.component.style.setProperty('--va-tallest-panel-height', maxHeight + 'px');
     });
   }
@@ -130,8 +129,6 @@ class WMVerticalAccordion {
       var activeSectionHeight = activePanelSections.scrollHeight
 
       this.component.style.setProperty('--va-active-height', activeSectionHeight + 'px');
-
-      console.log(activeSectionHeight);
 
     }
   }
@@ -228,82 +225,13 @@ class WMVerticalAccordion {
   };
   const mergedSettings = deepMerge({}, defaultSettings, userSettings);
 
-  // function reloadSquarespaceScripts(el) {
-  //   const scripts = [];
-  //   const accordions = document.querySelectorAll('[data-wm-plugin="vertical-accordions"]');
-  //   function loadScripts() {
-  //     if (!scripts.length) return;
-  //     let hasLoaded = [];
-  //     for (let el of scripts){
-  //       if (hasLoaded.includes(el.src) || hasLoaded.includes(el.innerHTML) || el.type == 'application/json') continue;
-  //       const script = document.createElement('script');
-  //       script.src = el.src;
-  //       script.async = el.async;
-  
-  //       script.onload = () => {
-  //         //console.log(`${el.src} loaded successfuly`);
-  //       };
-  
-  //       script.onerror = () => {
-  //         //console.log(`Error occurred while loading ${el.src}`);
-  //       };
-  
-  //       if (el.innerHTML) {
-  //         eval(el.innerHTML);
-  //         hasLoaded.push(el.innerHTML)
-  //       } else {
-  //         document.body.appendChild(script);
-  //         hasLoaded.push(el.src)
-  //       }
-  //     }
-  //   };
-  //   function runAfterDOMLoaded(fn) {
-  //     if (document.readyState === 'loading') {  // Still loading
-  //       document.addEventListener('DOMContentLoaded', fn);
-  //     } else {  // `DOMContentLoaded` has already fired
-  //       fn();
-  //     }
-  //   }
-  //   let hasBkgVideos = false;
-  //   let hasListSection = false;
-  //   let hasGallerySection = false;
-  //   let hasBkgFx = false;
-
-
-  //   runAfterDOMLoaded(() => {
-  //     accordions.forEach(el => {
-  //       window.Squarespace?.initializeLayoutBlocks(Y, Y.one(el));
-  //       window.Squarespace?.initializeNativeVideo(Y, Y.one(el));
-  //       window.Squarespace?.initializePageContent(Y, Y.one(el));
-  //       if (el.querySelector('.section-background .sqs-video-background-native')) 
-  //       {
-  //         hasBkgVideos = true;
-  //         }
-  //       if (el.querySelector('.page-section.user-items-list-section')) {
-  //         hasListSection = true;
-  //       }
-  //       if (el.querySelector('.page-section.gallery-section')) {
-  //         hasGallerySection = true;
-  //       }
-  //       if (el.querySelector('.background-fx-canvas')) {
-  //         hasBkgFx = true;
-  //       }
-  //     })
-  //     if (hasBkgVideos || hasListSection || hasGallerySection || hasBkgFx) {
-  //       let sqsLoaderScript = document.querySelector('body > [src*="https://static1.squarespace.com/static/vta"]');
-  //       scripts.push(sqsLoaderScript)
-  //     }
-  
-  //     loadScripts()
-  //   })
-  // }
   function reloadSquarespaceScripts() {
     const loadScript = (scriptSrc, async = true) => {
-      if (document.querySelector(`script[src="${scriptSrc}"]`)) return; // Already loaded
-  
+      const siteBundle = document.querySelector(`script[src*="${scriptSrc}"]`);
       const script = document.createElement('script');
-      script.src = scriptSrc;
+      script.src = siteBundle.src;
       script.async = async;
+      siteBundle.remove();
       document.body.appendChild(script);
     };
   
@@ -318,6 +246,7 @@ class WMVerticalAccordion {
     };
   
     const accordions = document.querySelectorAll('[data-wm-plugin="vertical-accordions"]');
+    let reloadSiteBundle = false;
     accordions.forEach(el => {
       window.Squarespace?.initializeLayoutBlocks(Y, Y.one(el));
       window.Squarespace?.initializeNativeVideo(Y, Y.one(el));
@@ -328,8 +257,7 @@ class WMVerticalAccordion {
           el.querySelector('.page-section.user-items-list-section') ||
           el.querySelector('.page-section.gallery-section') ||
           el.querySelector('.background-fx-canvas')) {
-        const sqsScriptSrc = "https://static1.squarespace.com/static/vta"; // Example, adjust as needed
-        loadScript(sqsScriptSrc);
+        reloadSiteBundle = true;
       }
   
       // For inline scripts - assume they are safe and from a trusted source.
@@ -343,6 +271,10 @@ class WMVerticalAccordion {
         }
       });
     });
+    if (reloadSiteBundle) {
+      const sqsScriptSrc = "https://static1.squarespace.com/static/vta"; 
+      loadScript(sqsScriptSrc);
+    };
   }
   async function getItemsFromCollection(path) {
     try {
