@@ -93,6 +93,7 @@
   border-width: var(--va-accordion-button-border-width, 0px);
   border-color: var(--va-accordion-button-border-color, currentColor);
   border-style: var(--va-accordion-button-border-style, solid);
+  align-items: center;
 }
 
 [data-wm-plugin="vertical-accordions"] .accordion-title:focus:focus-visible {
@@ -113,6 +114,7 @@
   text-overflow: ellipsis;
   writing-mode: vertical-lr;
   text-orientation: mixed;
+  width: fit-content;
 }
 
 [data-wm-plugin="vertical-accordions"] .accordion-title .icon-wrapper {
@@ -279,10 +281,6 @@
 
 [data-wm-plugin="vertical-accordions"] .accordion-panel:nth-of-type(8) .accordion-title {
   background-color: var(--va-panel-8-background);
-}
-
-#siteWrapper [data-wm-plugin="vertical-accordions"] .accordion-panel:nth-of-type(8) .accordion-title:hover {
-  background-color: var(--va-panel-hover-8-background, var(--va-panel-8-background));
 }
 
 #siteWrapper [data-wm-plugin="vertical-accordions"] .accordion-panel:nth-of-type(8) .accordion-title:hover {
