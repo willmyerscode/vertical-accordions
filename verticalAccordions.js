@@ -1,3 +1,9 @@
+/**
+* Vertical Accordions For Squarespace 
+* Copyright Abi Bacon & Will-Myers.com 
+* Development Lead, Abi Bacon
+**/
+
 class WMVerticalAccordion {
   static emitEvent(type, detail = {}, elem = document) {
     // Make sure there's an event type
@@ -15,7 +21,7 @@ class WMVerticalAccordion {
   };
   constructor(el){
     this.el = el;
-    
+    this.findSizes;
     this.accordionPanels = this.el.querySelectorAll('[data-wm-plugin="vertical-accordions"] .accordion-panel');
 
     this.initialOpen = this.getInitialPanelIndexToOpen();
@@ -36,11 +42,17 @@ class WMVerticalAccordion {
     WMVerticalAccordion.emitEvent('wmVerticalAccordions:loaded', {
       container: this.el
     });
+    this.resizeEvent();
+    
+    window.setTimeout(() => {
+      window.dispatchEvent(new Event('resize'));
+    }, 500)
   }
   bindEvents() {
     this.addPluginLoadedListener();
     this.resizeEvent();
     this.addClickEvent();
+    window.dispatchEvent(new Event('resize'));
   }
   addPluginLoadedListener() {
     const handleLoaded = () => {
@@ -133,12 +145,21 @@ class WMVerticalAccordion {
     }
   }
   getTitleSizes(){
+
+    if (navigator.userAgent.toLowerCase().includes('firefox')) {
+      this.accordionTitles.forEach((title) => {
+        title.style.width = '35px';
+      });
+    }
     this.componentSizes = this.component.getBoundingClientRect();
     this.componentWidth = this.componentSizes.width;
     this.totalTitleWidth = 0;
     this.accordionTitles.forEach((title) => {
+      const text = title.querySelector('.text')
+      text.clientWidth;
       var titleSizes = title.getBoundingClientRect();
       var titleWidth = titleSizes.width;
+      console.log(titleWidth)
       this.totalTitleWidth += titleWidth;
       
       this.activeWidth = this.componentWidth - this.totalTitleWidth + 'px';
