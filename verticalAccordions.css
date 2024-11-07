@@ -1,4 +1,3 @@
-
 /**
 * Vertical Accordions For Squarespace 
 * Copyright Will-Myers.com & Abi Bacon
@@ -285,4 +284,24 @@
 
 #siteWrapper [data-wm-plugin="vertical-accordions"] .accordion-panel:nth-of-type(8) .accordion-title:hover {
   background-color: var(--va-panel-hover-8-background, var(--va-panel-8-background));
+}
+
+.sqs-edit-mode-active .code-block [data-wm-plugin="vertical-accordions"] {
+  color: transparent;
+  background: transparent;
+  font-size: 0;
+  position: absolute;
+  line-height: 0;
+  width: 100%;
+  height: 25px;
+  border: 1px dashed var(--headingLargeColor);
+}
+
+.sqs-edit-mode-active .code-block [data-wm-plugin="vertical-accordions"]::after {
+  content: 'Vertical Accordions';
+  color: var(--headingLargeColor);
+  font-size: 12px;
+  position: absolute;
+  top: 50%;
+  transform:translateX(25%);
 }
