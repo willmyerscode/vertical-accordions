@@ -468,7 +468,7 @@ class WMVerticalAccordion {
     panelCount = panelCount.trim();
     panelCount = parseInt(panelCount);
 
-    let maxPanels = parseInt(8);
+    let maxPanels = parseInt(12);
 
     if (panelCount > maxPanels) {
       panelCount = maxPanels;
