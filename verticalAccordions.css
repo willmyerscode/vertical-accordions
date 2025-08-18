@@ -286,6 +286,38 @@
   background-color: var(--va-panel-hover-8-background, var(--va-panel-8-background));
 }
 
+[data-wm-plugin="vertical-accordions"] .accordion-panel:nth-of-type(9) .accordion-title {
+  background-color: var(--va-panel-9-background);
+}
+
+#siteWrapper [data-wm-plugin="vertical-accordions"] .accordion-panel:nth-of-type(9) .accordion-title:hover {
+  background-color: var(--va-panel-hover-9-background, var(--va-panel-9-background));
+}
+
+[data-wm-plugin="vertical-accordions"] .accordion-panel:nth-of-type(10) .accordion-title {
+  background-color: var(--va-panel-10-background);
+}
+
+#siteWrapper [data-wm-plugin="vertical-accordions"] .accordion-panel:nth-of-type(10) .accordion-title:hover {
+  background-color: var(--va-panel-hover-10-background, var(--va-panel-10-background));
+}
+
+[data-wm-plugin="vertical-accordions"] .accordion-panel:nth-of-type(11) .accordion-title {
+  background-color: var(--va-panel-11-background);
+}
+
+#siteWrapper [data-wm-plugin="vertical-accordions"] .accordion-panel:nth-of-type(11) .accordion-title:hover {
+  background-color: var(--va-panel-hover-11-background, var(--va-panel-11-background));
+}
+
+[data-wm-plugin="vertical-accordions"] .accordion-panel:nth-of-type(12) .accordion-title {
+  background-color: var(--va-panel-12-background);
+}
+
+#siteWrapper [data-wm-plugin="vertical-accordions"] .accordion-panel:nth-of-type(12) .accordion-title:hover {
+  background-color: var(--va-panel-hover-12-background, var(--va-panel-12-background));
+}
+
 .sqs-edit-mode-active .code-block [data-wm-plugin="vertical-accordions"] {
   color: transparent;
   background: transparent;
