@@ -246,7 +246,72 @@ class WMVerticalAccordion {
   };
   const mergedSettings = deepMerge({}, defaultSettings, userSettings);
 
-  function reloadSquarespaceScripts() {
+  function registerWebsiteComponentModules(el) {
+    const loader = window.websiteComponents?.loader;
+    if (!loader || !loader.importMap) return;
+
+    const canLoadModule = moduleName => {
+      if (typeof loader.canLoadModule === "function") return loader.canLoadModule(moduleName);
+      return loader.importMap[moduleName] !== undefined || loader.modules?.[moduleName] !== undefined;
+    };
+
+    // Squarespace's newer blocks (accordion, marquee, shape, ...) are "website
+    // components" initialized by a visitor loader that only resolves modules already
+    // in its import map; its API fallback returns 401 on visitor pages, so components
+    // fetched in after page load silently fail to initialize. Each component block
+    // carries its own script URLs in a data-block-scripts attribute — register those
+    // before the visitor instance loader runs so it can resolve them.
+    // Keep in sync with toolkit-private/src/squarespace/registerWebsiteComponentModules.js
+    const blocks = el.querySelectorAll(".sqs-block-website-component[data-definition-name][data-block-scripts]");
+    blocks.forEach(block => {
+      const definitionName = block.getAttribute("data-definition-name");
+
+      let scriptUrls;
+      try {
+        scriptUrls = JSON.parse(block.getAttribute("data-block-scripts"));
+      } catch (error) {
+        console.warn("Could not parse data-block-scripts attribute:", block, error);
+        return;
+      }
+      if (!Array.isArray(scriptUrls)) return;
+
+      scriptUrls.forEach(url => {
+        if (typeof url !== "string") return;
+        const filename = url.split("/").pop();
+        if (!filename || !filename.endsWith(".js")) return;
+
+        const moduleName = filename.slice(0, -3);
+        // Only register this block's own modules, and never overwrite an entry the
+        // page already resolves — a second loaded copy of a visitor script throws
+        // "[...] is already defined" in the loser.
+        if (moduleName.startsWith(definitionName + ".") && !canLoadModule(moduleName)) {
+          loader.importMap[moduleName] = url;
+        }
+      });
+    });
+  }
+
+  async function initializeWebsiteComponents(el) {
+    const instanceLoader = window.websiteComponents?.visitorInstanceLoader;
+    if (typeof instanceLoader?.load !== 'function') return;
+
+    const blocks = Array.from(el.querySelectorAll('[data-website-component-id][data-definition-name]'));
+    const results = await Promise.allSettled(blocks.map(element => {
+      return instanceLoader.load({
+        definitionName: element.dataset.definitionName,
+        id: element.dataset.websiteComponentId,
+        element,
+        forceRefresh: true,
+      });
+    }));
+
+    results.forEach((result, index) => {
+      if (result.status !== 'rejected') return;
+      console.warn(`Could not initialize website component "${blocks[index].dataset.definitionName}":`, result.reason);
+    });
+  }
+
+  async function reloadSquarespaceScripts() {
     const loadScript = (scriptSrc, async = true) => {
       const siteBundle = document.querySelector(`script[src*="${scriptSrc}"]`);
       const script = document.createElement('script');
@@ -268,10 +333,16 @@ class WMVerticalAccordion {
   
     const accordions = document.querySelectorAll('[data-wm-plugin="vertical-accordions"]');
     let reloadSiteBundle = false;
-    accordions.forEach(el => {
+    for (const el of accordions) {
+      registerWebsiteComponentModules(el);
       window.Squarespace?.initializeLayoutBlocks(Y, Y.one(el));
       window.Squarespace?.initializeNativeVideo(Y, Y.one(el));
-      window.Squarespace?.initializePageContent(Y, Y.one(el));
+      window.Squarespace?.initializeCollectionPages?.(Y, Y.one(el));
+      // initializePageContent uses Squarespace's content-preview path, which fetches
+      // /api/1/website-component-definitions and returns 401 for logged-out visitors.
+      // Load each injected component exactly once through the visitor loader instead;
+      // overlapping initializers attach duplicate listeners that break interactive blocks.
+      await initializeWebsiteComponents(el);
   
       // Directly check and load scripts if needed
       if (el.querySelector('.section-background .sqs-video-background-native') ||
@@ -291,11 +362,12 @@ class WMVerticalAccordion {
           executeInlineScript(script.innerHTML);
         }
       });
-    });
+    }
     if (reloadSiteBundle) {
-      const sqsScriptSrc = "https://static1.squarespace.com/static/vta"; 
+      const sqsScriptSrc = "https://static1.squarespace.com/static/vta";
       loadScript(sqsScriptSrc);
     };
+
   }
   async function getItemsFromCollection(path) {
     try {
